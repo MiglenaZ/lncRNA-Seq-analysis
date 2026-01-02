@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #-------------------------------------------
 # Kraken2 analysis with the sbatch.kraken script
 vi sbatch.kraken
