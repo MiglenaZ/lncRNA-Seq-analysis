@@ -1,3 +1,4 @@
+#!/usr/bin/env Rscript
 library(data.table)
 library(DESeq2)
 library(data.table)
