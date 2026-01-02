@@ -1,0 +1,41 @@
+#-------------------------------------------
+# Kraken2 analysis with the sbatch.kraken script
+vi sbatch.kraken
+sbatch sbatch.kraken
+
+#-------------------------------------------
+# Krona visualization
+# combined.kreport (for all samples kreports combination, if you want a Krona graph of all samples) (recommended to have combined_final.kreport in the same directory as the rest of the kreports for kreport2krona.py)
+python <FULL_PATH_TO_COMBINE_KREPORTS.PY> -r <KREPORT_FILES> -o <COMBINED_FINAL.KREPORT>
+
+# kreport2krona.py
+for f in <KREPORTS_FULL_PATH>/*.report; do
+  base=$(basename "$f" .report)
+  echo "Generating ${base}.krona..."
+  python <FULL_PATH_TO_KREPORT2KRONA.PY> -r "$f" -o <OUTPUT_DIR>/"${base}.krona"
+done
+
+# ktImportText (visualization - downloadable .html files with Krona graphs)
+for f in <KRONA_FILES_FULL_PATH>/*.krona; do
+  base=$(basename "$f" .krona)
+  echo "Generating ${base}.html..."
+  ktImportText "$f" -o <OUTPUT_DIR>/"${base}.html"
+done
+
+#-------------------------------------------
+# Keep only homo sapiens reads with sbatch.filter_reads script
+vi sbatch.filter_reads
+sbatch sbatch.filter_reads
+
+for f in <OUTPUT_DIR_OF_FILTERED_READS>/*_clean_R*.fq; do
+    echo "Compressing $f"
+    gzip "$f"
+done
+
+vi fix_fasta_to_fastq.sh
+bash fix_fasta_to_fastq.sh
+
+#-------------------------------------------
+# nf-core/rna-seq with rna-seq.sbatch
+vi lncpipe.sbatch
+sbatch lncpipe.sbatch
